@@ -170,6 +170,17 @@ curl -X POST http://localhost:4000/api/webhooks/register \
 
 ---
 
+## Frontend Environment Variables
+
+The frontend needs your Trello board ID to load lists and sync updates.  
+Create a file:  
+- frontend/.env  
+Add:  
+- VITE_TRELLO_BOARD_ID=your_board_id_here  
+- VITE_API_BASE_URL=http://localhost:4000/api
+
+---
+
 ## Required API Endpoints (for evaluation)   
 
 | Method | Endpoint                   | Description             |
@@ -179,7 +190,7 @@ curl -X POST http://localhost:4000/api/webhooks/register \
 | POST   | /api/tasks                 | Create card             |
 | PUT    | /api/tasks/:cardId         | Update or move card     |
 | DELETE | /api/tasks/:cardId         | Delete card             |
-| POST   | /api/webhooks/register     | Register webhook        |
+| POST   | /webhooks/register     | Register webhook        |
 
 All endpoints included in Postman Collection.
 
@@ -214,7 +225,7 @@ All updates sync instantly, without refresh
 
 Watch the 3–5 min demo here:
 
-➡️ https://youtu.be/YOUR_VIDEO_LINK
+➡️ https://youtu.be/CO4If-yIHwk
 
 ---
 
