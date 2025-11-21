@@ -1,0 +1,347 @@
+.board-container {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: linear-gradient(180deg, #071025 0%, #04101a 100%);
+  font-family: Inter, sans-serif;
+}
+
+.board {
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 20px;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
+.lists-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  width: max-content; 
+  padding-bottom: 20px;
+}
+
+/* LIST COLUMN */
+.list {
+  width: 270px;
+  background: #1e1f22;
+  border-radius: 10px;
+  padding: 12px;
+  box-sizing: border-box;
+  position: relative;
+  flex-shrink: 0;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+/* LIST TITLE */
+.list-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  margin:0 0 10px 0;
+}
+
+
+.list-title-input {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: transparent;
+  color: #fff;
+  font-size: 15px;
+}
+
+/*  LIST MENU (⋯) BUTTON*/
+.list-menu-btn {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  color: #ccc;
+  cursor: pointer;
+}
+
+.list-menu-btn:hover {
+  color: #fff;
+}
+
+/* CARDS CONTAINER*/
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 10px; 
+}
+
+/* ADD CARD INPUT*/
+.dynamic-placeholder::placeholder {
+  color: var(--placeholder-color);
+  opacity: 0.8;
+}
+
+.dynamic-input {
+  border: 1px solid var(--input-border-color);
+  outline: none;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: transparent;
+  transition: 0.2s ease;
+}
+
+.dynamic-input:focus {
+  border-color: var(--input-border-focus);
+}
+
+.card-input {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background: rgba(255,255,255,0.04);
+  color: #fff;
+  outline: none;
+}
+
+.card-input:focus {
+  border-color: #87a5ff;
+}
+
+.add-card-btn {
+  padding: 8px 12px;
+  border-radius:8px;
+  border: none;
+  font-weight:700;
+  cursor:pointer;
+  transition: all 0.2s ease, transform 0.1s ease;
+}
+
+.add-card-btn:hover {
+  background: var(--hover-bg) !important;
+  transform: translateY(-1px);
+}
+
+/* ADD LIST BOX */
+
+.list-controls { display:flex; gap:8px; margin-top:8px; }
+.list-controls input {
+  flex:1;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.02);
+  color: #e6eef8;
+}
+
+.add-list-box {
+  width: 270px;
+  flex-shrink: 0;
+}
+
+.add-list-btn {
+  width: 100%;
+  background: #46738d;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+  transition: background 0.2s ease;
+}
+
+.add-list-btn:hover {
+  background: #558aa8;
+}
+
+/* ADD LIST FORM */
+.add-list-form {
+  background: #0d0d0d;       
+  padding: 12px;
+  border-radius: 12px;
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border: 1px solid #222;  
+}
+
+.add-list-form input {
+  background: #1a1a1a;
+  color: #fff;
+  padding: 10px 12px;
+  border: 1px solid #444;
+  border-radius: 8px;
+  outline: none;
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+}
+
+.add-list-form input:focus {
+  border-color: #87a5ff;
+}
+
+.add-list-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.add-list-actions button {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.add-list-actions button:first-child {
+  background: #6a9cff;
+  color: black;
+  font-weight: 600;
+}
+
+.add-list-actions button:last-child {
+  background: transparent;
+  font-size: 20px;
+  color: #ccc;
+}
+
+.add-list-actions button:last-child:hover{
+    background: #2c2e33;
+}
+
+/* SCROLLBAR STYLE */
+.board::-webkit-scrollbar {
+  height: 12px;
+}
+
+.board::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.06);
+  border-radius: 10px;
+}
+
+.board::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.18);
+  border-radius: 10px;
+}
+
+.board::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.25);
+}
+
+
+/* list menu css */
+/* List action popup */
+.list-menu-popup {
+  position: absolute;
+  top: 44px;
+  right: 8px;
+  width: 220px;
+  background: #1f2125;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.45);
+  padding: 12px;
+  z-index: 1200;
+  animation: popup 0.18s ease-out;
+  border: 1px solid #2c2e33;
+  box-sizing: border-box;
+}
+
+.list-menu-head {
+  margin: 0 0 8px 0;
+  text-align: center;
+  color: #abb3be;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.list-menu-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: #bfc6cc;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 6px;
+  border-radius: 6px;
+}
+
+.list-menu-close:hover { background: rgba(255,255,255,0.03); color: white; }
+
+.menu-item {
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #d0d3d9;
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+.menu-item:hover {
+  background: #2a2d31;
+}
+
+/* section title inside popup */
+.menu-section-title {
+  margin-top: 10px;
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: #8b8e93;
+  text-transform: uppercase;
+}
+
+/* color row / dots */
+.color-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.color-dot-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
+.color-dot-btn:hover {
+  transform: scale(1.06);
+  border-color: white;
+}
+
+.drag-overlay-card {
+  border-radius: 12px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+  transform: rotate(1deg);
+  background: #242528;
+  padding: 0;
+  opacity: 0.95;
+  pointer-events: none;
+}
+
+
+/* popup animation */
+@keyframes popup {
+  from { opacity: 0; transform: translateY(-6px) scale(.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
