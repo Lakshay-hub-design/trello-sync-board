@@ -10,19 +10,21 @@ import {
   archiveList
 } from "../services/api";
 
-import { DndContext, DragOverlay } from "@dnd-kit/core";
+import { socket } from '../socket'
+import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { closestCenter } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import { toast } from "react-toastify";
-import { io } from "socket.io-client";
+import throttle from "lodash.throttle";
 
 import BoardNavbar from "../components/BoardNavbar";
 import ListColumn from "../components/ListColumn";
 import AddListButton from "../components/AddListButton";
 import "../styles/board.css";
 import CardItem from "../components/CardItem";
+import { useCallback } from "react";
 
-const BOARD_ID = "691ac15354f26bab4a525187";
+const BOARD_ID = import.meta.env.VITE_TRELLO_BOARD_ID;
 
 export default function Board() {
   const [lists, setLists] = useState([]);
@@ -45,21 +47,29 @@ export default function Board() {
 
   const [boardName, setBoardName] = useState("");
 
-  const socket = io("http://localhost:4000");
 
   // FETCH BOARD + COLORS
-  const fetchLists = async () => {
+  const fetchLists = useCallback(async () => {
     try {
       const res = await getBoardLists(BOARD_ID);
-
       setLists(res.data.lists);
-
-      if (res.data.board?.name) setBoardName(res.data.board.name);
-      else if (res.data.boardName) setBoardName(res.data.boardName);
-    } catch (err) {
+      setBoardName(res.data.board?.name || res.data.boardName || "Board");
+    } catch {
       toast.error("Failed to load board");
     }
-  };
+  }, []);
+
+  // Initial load
+  useEffect(() => {
+    fetchLists().then(() => setInitialLoad(false));
+
+    (async () => {
+      try {
+        const res = await getListColors(BOARD_ID);
+        if (res.data.colors) setListColors(res.data.colors);
+      } catch {}
+    })();
+  }, [fetchLists]);
 
   useEffect(() => {
     fetchLists().then(() => setInitialLoad(false));
@@ -70,7 +80,7 @@ export default function Board() {
         if (res.data.colors) setListColors(res.data.colors);
       } catch {}
     })();
-  }, []);
+  }, [fetchLists]);
 
   const handleRenameList = async (listId) => {
     if (!tempListName.trim()) {
@@ -90,38 +100,36 @@ export default function Board() {
 
   // SOCKET UPDATES
   useEffect(() => {
-    const onTrelloEvent = (event) => {
-      console.log("Received event from trello:", event);
-      fetchLists();
-    };
+    // throttle refresh so fast events don't lag UI
+    const throttledRefresh = throttle(fetchLists, 500);
 
-    const onListColorUpdated = ({ boardId, listId, color }) => {
-      if (boardId !== BOARD_ID) return;
-      setListColors((prev) => {
-        const next = { ...prev };
-        if (color) next[listId] = color;
-        else delete next[listId];
-        return next;
-      });
-    };
+    const onEvent = () => throttledRefresh();
 
-    const onListRename = ({ listId, name, boardId }) => {
+    const onRename = ({ boardId, listId, name }) => {
       if (boardId !== BOARD_ID) return;
-      setLists((prev) =>
-        prev.map((l) => (l.id === listId ? { ...l, name } : l))
+      setLists(prev =>
+        prev.map(l => (l.id === listId ? { ...l, name } : l))
       );
     };
 
-    socket.on("trello:event", onTrelloEvent);
-    socket.on("list:color.updated", onListColorUpdated);
-    socket.on("list:rename", onListRename);
+    const onColor = ({ boardId, listId, color }) => {
+      if (boardId !== BOARD_ID) return;
+      setListColors(prev => ({
+        ...prev,
+        [listId]: color || undefined
+      }));
+    };
+
+    socket.on("trello:event", onEvent);
+    socket.on("list:rename", onRename);
+    socket.on("list:color.updated", onColor);
 
     return () => {
-      socket.off("trello:event", onTrelloEvent);
-      socket.off("list:color.updated", onListColorUpdated);
-      socket.off("list:rename", onListRename);
+      socket.off("trello:event", onEvent);
+      socket.off("list:rename", onRename);
+      socket.off("list:color.updated", onColor);
     };
-  }, []);
+  }, [fetchLists]);
 
   // AUTO-FOCUS NEW CARD INPUT
   useEffect(() => {
@@ -198,6 +206,12 @@ export default function Board() {
 
     setActiveCard(null);
   };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 3}
+    })
+  );
 
   // ADD NEW CARD
   const handleAddCard = async (listId) => {
@@ -339,6 +353,7 @@ const handleArchiveList = async (listId) => {
           </div>
         )}
         <DndContext
+          sensors={sensors}
           collisionDetection={closestCenter}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
